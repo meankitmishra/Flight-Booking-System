@@ -68,19 +68,21 @@ Make sure you have the following installed on your machine:
 2.  **Set up environment variables:**
     Create a `.env` file in the root of the project by copying the example file.
     ```bash
-    cp .env.example .env
+    cp envexample.txt .env
     ```
     Now, open the `.env` file and add your environment-specific configurations.
 
-    ```env
-    PORT=3000
-    DB_USER=<your_database_username>
-    DB_PASS=<your_database_password>
-    DB_NAME=<your_database_name>
-    DB_HOST=<your_database_host>
-    FLIGHT_SERVICE=
-    BOOKING_SERVICE=
-    ```
+  ```env
+   PORT=
+   SALT_ROUNDS=15
+   JWT_SECRET="secret_key"
+   JWT_EXPIRIY="time"
+   DATABASE_USERNAME=username
+   DATABASE_PASSWORD=password
+   DATABASE_URL= mysql #eg mysql postgree etc link
+   FLIGHT_SERVICE=http://flight-service
+   BOOKING_SERVICE=http://flight-booking
+  ```
 
 3.  **Configure the database:**
     In the `src/config/` directory, create a `config.js` file by copying the example.

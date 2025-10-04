@@ -11,20 +11,20 @@ The system is composed of three core services that communicate over a Docker net
 ```text
                                                               +---------------------+
                                +----------------------------->|   Flight Service    |
-                               | (e.g., /api/v1/flights)      |  (Port: 3000)       |
-                               |                              | (Database: flights_db)|
+                               | (e.g., /api/v1/flights)      |  (Port: 6001)       |
+                               |                              | (Database: flights)|
                                |                              +---------------------+
                                |
 +-----------+      +-------------------------+
 |           |      |      API Gateway        |
-|  Client   |----->| (Port: 8080)            |
+|  Client   |----->| (Port: 6003)            |
 |           |      | (Handles Auth & Routes) |
 +-----------+      +-------------------------+
                                |
                                |                              +---------------------+
                                |                              |  Booking Service    |
-                               +----------------------------->|  (Port: 3001)       |
-                                 (e.g., /api/v1/bookings)     | (Database: bookings_db)|
+                               +----------------------------->|  (Port: 6000)       |
+                                 (e.g., /api/v1/bookings)     | (Database: flights)|
                                                               +---------------------+
 ```
 
@@ -59,12 +59,18 @@ The only prerequisites you need to run this entire microservices stack are **Git
 Clone this root repository to your local machine.
 
 ```bash
-git clone [https://github.com/your-username/flight-microservices.git](https://github.com/your-username/flight-microservices.git)
-cd flight-microservices
+git clone [git@github.com:meankitmishra/Flight-Booking-System.git](git@github.com:meankitmishra/Flight-Booking-System.git)
+cd flight-booking-system
 ```
 
 ### 2. Configure Environment Variables 
-You must create a .env file inside each of the three service directories (api-gateway, flight-service, booking-service). You can do this by copying the .env.example files.
+You must create a .env file inside each of the three service directories (api-gateway, flight-service, booking-service). You can do this by copying the envexample.txt files.
+
+And you need to create a .env file for `docker-compose.yml`
+
+```BASH
+cp envexample.txt .env
+```
 
 #### Required File Structure:
 ```
@@ -100,8 +106,8 @@ Code snippet
 ```PORT=8080
 JWT_SECRET=this_is_a_very_strong_secret_key
 # Use Docker service names instead of 'localhost'
-FLIGHT_SERVICE_URL=http://flight-service:3000
-BOOKING_SERVICE_URL=http://booking-service:3001
+FLIGHT_SERVICE_URL=http://flight-service:6001
+BOOKING_SERVICE_URL=http://booking-service:6002
 ```
 
 Configure the `.env` files for the other two services with your desired database credentials. These will be used by `docker-compose.yml` to initialize the databases.

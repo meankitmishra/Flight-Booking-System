@@ -80,17 +80,16 @@ Make sure you have the following installed on your machine:
 2.  **Set up environment variables:**
     Create a `.env` file in the root of the project by copying the example file.
     ```bash
-    cp .env.example .env
+    cp envexample.txt .env
     ```
     Now, open the `.env` file and add your environment-specific configurations.
 
     ```env
-    PORT=3000
-    DB_USER=<your_database_username>
-    DB_PASS=<your_database_password>
-    DB_NAME=<your_database_name>
-    DB_HOST=<your_database_host>
-    FLIGHT_SERVICE=
+    PORT=6000
+    DATABASE_USERNAME=username
+    DATABASE_PASSWORD=password
+    DATABASE_URL= mysql #eg mysql postgree etc link
+    FLIGHT_SERVICE_URL=url of flight service
     ```
 
 3.  **Configure the database:**
