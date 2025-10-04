@@ -1,0 +1,76 @@
+  services:
+    mysql:
+      image: mysql:8.0
+      env_file:
+        - .env
+      ports:
+        - "3308:3306"
+      volumes:
+        - mysql-data:/var/lib/mysql
+      networks:
+        - flight-network
+      healthcheck:
+        test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+        timeout: 10s
+        retries: 3
+    
+    flight-service:
+      build: 
+        context: ./flight-service
+        dockerfile: Dockerfile
+      depends_on:
+        mysql:
+          condition: service_healthy
+      ports:
+        - "6001:6001"
+      env_file:
+        - ./flight-service/.env
+      networks:
+        - flight-network
+      restart: on-failure
+      healthcheck:
+        test: ["CMD", "curl", "-f", "http://flight-service:6001"]
+        interval: 10s
+        timeout: 5s
+        retries: 3
+
+    flight-booking:
+      build: 
+        context: ./flight-booking
+        dockerfile: Dockerfile
+      depends_on:
+        - flight-service
+      ports:
+        - "6000:6000"
+      env_file:
+        - ./flight-booking/.env
+      networks:
+        - flight-network
+      restart: on-failure
+      healthcheck:
+        test: ["CMD", "curl", "-f", "http://flight-booking:6000/api/v1/info"]
+        interval: 10s
+        timeout: 5s
+        retries: 3
+
+    gateway:
+      build: 
+        context: ./gateway
+        dockerfile: Dockerfile
+      depends_on:
+        mysql:
+          condition: service_healthy
+      restart: always
+      networks:
+        - flight-network
+      ports:
+        - "6003:6003"
+      env_file:
+        - ./gateway/.env
+
+
+
+  volumes:
+    mysql-data:
+  networks:
+    flight-network:

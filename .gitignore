@@ -1,0 +1,16 @@
+flight-booking/.env
+flight-booking/src/config/config.js
+flight-booking/node_modules
+flight-booking/combined.log
+
+flight-service/.env
+flight-service/src/config/config.js
+flight-service/node_modules
+flight-service/combined.log
+
+gateway/.env
+gateway/src/config/config.js
+gateway/node_modules
+gateway/combined.log
+
+.env

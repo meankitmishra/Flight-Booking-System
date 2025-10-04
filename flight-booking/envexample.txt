@@ -1,0 +1,5 @@
+PORT=6000
+DATABASE_USERNAME=username
+DATABASE_PASSWORD=password
+DATABASE_URL= mysql #eg mysql postgree etc link
+FLIGHT_SERVICE_URL=url of flight service
