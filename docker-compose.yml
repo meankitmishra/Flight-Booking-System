@@ -4,7 +4,7 @@
       env_file:
         - .env
       ports:
-        - "3308:3306"
+        - "3308:3306" # 3306 already in use
       volumes:
         - mysql-data:/var/lib/mysql
       networks:
