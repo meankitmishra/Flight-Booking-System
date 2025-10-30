@@ -1,38 +1,24 @@
-# This tells Render how to build and deploy all your services.
 services:
-  # 1. The MySQL Database
-  # This is a "Private Service" (pserv)
-  - type: pserv
+  
+  - type: database
     name: flight-db
-    runtime: mysql
-    plan: free # Use the free plan for testing
+    engine: mysql 
+    plan: free 
+    
 
   # 2. The Flight Service
   - type: web
     name: flight-service
     runtime: docker
-    # Tell Render to build from the Dockerfile in this sub-folder
     rootDir: ./flight-service
     plan: free
     envVars:
-      # These variables link to the database we created above
-      - key: DB_HOST
+      
+      - key: DATABASE_URL
         fromService:
-          type: pserv
+          type: database 
           name: flight-db
-          property: host
-      - key: DB_USER
-        fromService:
-          type: pserv
-          name: flight-db
-          property: user
-      - key: DB_PASSWORD
-        fromService:
-          type: pserv
-          name: flight-db
-          property: password
-      - key: DB_NAME
-        value: flight-db # You can name this whatever you like
+          property: connectionString 
       - key: PORT
         value: 6001
 
@@ -43,44 +29,39 @@ services:
     rootDir: ./booking-service
     plan: free
     envVars:
-      # Link to the same database
-      - key: DB_HOST
+      
+      - key: DATABASE_URL
         fromService:
-          type: pserv
+          type: database 
           name: flight-db
-          property: host
-      - key: DB_USER
-        fromService:
-          type: pserv
-          name: flight-db
-          property: user
-      - key: DB_PASSWORD
-        fromService:
-          type: pserv
-          name: flight-db
-          property: password
-      - key: DB_NAME
-        value: flight-db # Use the same DB name as before
+          property: connectionString 
       - key: PORT
-        value: 6000 # Using 6000 as per your docker-compose file
+        value: 6000 
 
-  # 4. The API Gateway (the only one we expose to the public)
+  # 4. The API Gateway
+  
   - type: web
     name: gateway
     runtime: docker
     rootDir: ./gateway
     plan: free
     envVars:
+      - key: DATABASE_URL
+        fromService:
+          type: database 
+          name: flight-db
+          property: connectionString 
+      - key: PORT
+        value: 6000 
       - key: PORT
         value: 6003
       - key: JWT_SECRET
         generateValue: true # Let Render create a secure random secret
-      # Link to the internal URLs of your other services
       - key: FLIGHT_SERVICE_URL
         fromService:
-          type: web
-          name: flight-service
-          property: url
+          type: web # This points to a 'web' service
+          name: flight-service # The name of the web service
+          property: url # 'url' is the correct property for a 'web' service
       - key: BOOKING_SERVICE_URL
         fromService:
           type: web
