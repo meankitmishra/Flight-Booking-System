@@ -1,16 +1,16 @@
   services:
-    mysql:
-      image: mysql:8.0
+    db:
+      image: postgres:15-alpine
       env_file:
         - .env
       ports:
-        - "3308:3306" # 3306 already in use
+        - "5432:5432" 
       volumes:
-        - mysql-data:/var/lib/mysql
+        - postgres_data:/var/lib/postgresql/data
       networks:
         - flight-network
       healthcheck:
-        test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+        test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
         timeout: 10s
         retries: 3
     
@@ -19,7 +19,7 @@
         context: ./flight-service
         dockerfile: Dockerfile
       depends_on:
-        mysql:
+        db:
           condition: service_healthy
       ports:
         - "6001:6001"
@@ -29,7 +29,7 @@
         - flight-network
       restart: on-failure
       healthcheck:
-        test: ["CMD", "curl", "-f", "http://flight-service:6001"]
+        test: ["CMD", "curl", "-f", "http://localhost:6001"]
         interval: 10s
         timeout: 5s
         retries: 3
@@ -48,7 +48,7 @@
         - flight-network
       restart: on-failure
       healthcheck:
-        test: ["CMD", "curl", "-f", "http://flight-booking:6000/api/v1/info"]
+        test: ["CMD", "curl", "-f", "http://localhost:6000/api/v1/info"]
         interval: 10s
         timeout: 5s
         retries: 3
@@ -58,7 +58,7 @@
         context: ./gateway
         dockerfile: Dockerfile
       depends_on:
-        mysql:
+        db:
           condition: service_healthy
       restart: always
       networks:
@@ -71,6 +71,6 @@
 
 
   volumes:
-    mysql-data:
+    postgres_data:
   networks:
     flight-network:

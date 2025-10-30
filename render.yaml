@@ -2,7 +2,7 @@ services:
   
   - type: database
     name: flight-db
-    engine: mysql 
+    engine: postgresql 
     plan: free 
     
 

@@ -14,3 +14,4 @@ gateway/node_modules
 gateway/combined.log
 
 .env
+node_modules
